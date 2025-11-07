@@ -1,29 +1,15 @@
 import { Card, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-export default function ProjectPreviewCard({ count = 3 }) {
-  const projects = [
-    {
-      title: "Jargon",
-      desc: "A customizable language learning app designed for immigrant tradespeople in BC",
-      img: "./jargon_logo.png",
-      link: "https://jargon-app.ca"
-    },
-    {
-      title: "Money Monsters",
-      desc: "Teach children financial literacy through an engaging chore management platform.",
-      img: "./MM.png",
-      link: "https://moneymonstersv2.onrender.com/"
-    },
-    {
-      title: "Figma User Documentation",
-      desc: "Comprehensive mkdocs walkthrough for learning the Figma design system.",
-      img: "./figma.png",
-      link: "https://builtbyrobyn.github.io/mkdocsmaterialcomms/"
-    },
-  ];
-
-  const displayedProjects = projects.slice(0, count);
+export default async function ProjectPreviewCard({ count = 3 }) {
+ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+ const projects = await fetch(`${apiUrl}/api/projects`)
+ .then((res) => res.json())
+ .then((data) => data.projects)
+ .catch((error) => {
+    console.error("Error fetching projects:", error);
+    return [];
+ });
 
   return (
     <section className="container mx-auto px-4 py-12">
@@ -35,7 +21,7 @@ export default function ProjectPreviewCard({ count = 3 }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-        {displayedProjects.map((project, index) => (
+        {projects.map((project, index) => (
           <Card key={index} className="flex flex-col h-full p-0 overflow-hidden">
             <div className="relative w-full aspect-video overflow-hidden p-4 bg-muted">
               <img
